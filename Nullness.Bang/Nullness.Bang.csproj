@@ -4,14 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <OutputItemType>Analyzer</OutputItemType>
 	  <PackageId>Nullness.Bang</PackageId>
-	  <Version>1.0.1</Version>
+	  <Version>2.0.1</Version>
 	  <Authors>JoostvV</Authors>
 	  <Description>Add nullforging operator to CS8602 </Description>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <RepositoryUrl>https://github.com/JoostVanVelthoven/Nullness.Bang</RepositoryUrl>
-
+	  <PackageTags>analyzer</PackageTags>
+	  <BuildOutputTargetFolder>analyzers</BuildOutputTargetFolder>
   </PropertyGroup>
 
   <ItemGroup>

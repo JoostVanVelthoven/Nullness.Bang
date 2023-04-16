@@ -25,7 +25,9 @@ Nulless.bang is an amazing CS8602 compiler analyzer for .NET C# projects. It's d
 
 ![Example.](example.png)
 
-4. **Iterate** on your codebase, addressing CS8602 warnings in new code and gradually improving null handling.
+4. **Remove** After the migration is completed, remove the 'Nullness.Bang' package.
+
+5. **Iterate** on your codebase, addressing CS8602 warnings in new code and gradually improving null handling.
 
 ## Join the Nulless.bang Community 🌟
 
