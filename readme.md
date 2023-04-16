@@ -19,7 +19,7 @@ Nulless.bang is an amazing CS8602 compiler analyzer for .NET C# projects. It's d
 </PropertyGroup>
 ```
 
-2. **Install** the Nulless.bang tool as a dependency for your project, either through NuGet ''
+2. **Install** the Nulless.bang tool as a dependency for your project, through NuGet 'Nullness.Bang'
 
 3. **Migrate** using Visual studio
 
