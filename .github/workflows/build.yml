@@ -1,0 +1,47 @@
+name: Build, Test, and Publish Nulless.bang Analyzer
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+
+  publish:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Publish to NuGet
+      uses: brandedoutcast/publish-nuget@v2.5.2
+      with:
+        PROJECT_FILE_PATH: 'src/Nulless.bang/Nulless.bang.csproj'
+        NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+        VERSION_REGEX: '<Version>(.*)<\/Version>'
