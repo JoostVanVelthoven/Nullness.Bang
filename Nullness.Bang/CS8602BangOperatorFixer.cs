@@ -36,20 +36,30 @@ namespace Nullness.Bang
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            var memberAccess = root.FindToken(diagnosticSpan.Start)
-                .Parent.AncestorsAndSelf()
+            var token = root.FindToken(diagnosticSpan.Start);
+            var memberAccess = token.Parent
+                .AncestorsAndSelf()
                 .OfType<MemberAccessExpressionSyntax>()
-                .First();
+                .Last();
 
-            context.RegisterCodeFix(
-                CodeAction.Create(
-                    title: "Add null-forgiving operator",
-                    createChangedDocument: cancellationToken =>
-                        AddBangOperatorAsync(context.Document, memberAccess, cancellationToken),
-                    equivalenceKey: "Add null-forgiving operator"
-                ),
-                diagnostic
-            );
+            // Check if null-forgiving operator is already present
+            var hasNullForgivingOperator = token.Parent
+                .AncestorsAndSelf()
+                .OfType<PostfixUnaryExpressionSyntax>()
+                .Any(p => p.Kind() == SyntaxKind.SuppressNullableWarningExpression);
+
+            if (!hasNullForgivingOperator)
+            {
+                context.RegisterCodeFix(
+                    CodeAction.Create(
+                        title: "Add null-forgiving operator",
+                        createChangedDocument: cancellationToken =>
+                            AddBangOperatorAsync(context.Document, memberAccess, cancellationToken),
+                        equivalenceKey: "AddNullForgivingOperator"
+                    ),
+                    diagnostic
+                );
+            }
         }
 
         private async Task<Document> AddBangOperatorAsync(
