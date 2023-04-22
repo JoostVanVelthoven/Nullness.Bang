@@ -149,7 +149,7 @@ namespace Nullness.Bang.Tests
                 DiagnosticResult.CompilerWarning("CS8602").WithSpan(17, 9, 17, 54)
             );
 
-            testhost.NumberOfIncrementalIterations = 2;      
+            testhost.NumberOfFixAllIterations = 2;      
 
             await testhost.RunAsync();
         }
