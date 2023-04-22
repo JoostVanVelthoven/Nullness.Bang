@@ -37,29 +37,36 @@ namespace Nullness.Bang
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var token = root.FindToken(diagnosticSpan.Start);
-            var memberAccess = token.Parent
-                .AncestorsAndSelf()
-                .OfType<MemberAccessExpressionSyntax>()
-                .Last();
 
             // Check if null-forgiving operator is already present
-            var hasNullForgivingOperator = token.Parent
+            var memberAccess = token.Parent
+                .AncestorsAndSelf()
+                .TakeWhile(x =>
+                {
+                    if (x is PostfixUnaryExpressionSyntax p)
+                    {
+                        return p.Kind() != SyntaxKind.SuppressNullableWarningExpression;
+                    }
+                    return true;
+                })
+                .OfType<MemberAccessExpressionSyntax>()
+                .LastOrDefault();
+
+            var vreemd = token.Parent
                 .AncestorsAndSelf()
                 .OfType<PostfixUnaryExpressionSyntax>()
-                .Any(p => p.Kind() == SyntaxKind.SuppressNullableWarningExpression);
+                .Select(p => p.IsKind(SyntaxKind.SuppressNullableWarningExpression))
+                .ToList();
 
-            if (!hasNullForgivingOperator)
-            {
-                context.RegisterCodeFix(
-                    CodeAction.Create(
-                        title: "Add null-forgiving operator",
-                        createChangedDocument: cancellationToken =>
-                            AddBangOperatorAsync(context.Document, memberAccess, cancellationToken),
-                        equivalenceKey: "AddNullForgivingOperator"
-                    ),
-                    diagnostic
-                );
-            }
+            context.RegisterCodeFix(
+                CodeAction.Create(
+                    title: "Add null-forgiving operator",
+                    createChangedDocument: cancellationToken =>
+                        AddBangOperatorAsync(context.Document, memberAccess, cancellationToken),
+                    equivalenceKey: "AddNullForgivingOperator"
+                ),
+                diagnostic
+            );
         }
 
         private async Task<Document> AddBangOperatorAsync(

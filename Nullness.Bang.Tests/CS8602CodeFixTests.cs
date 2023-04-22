@@ -1,5 +1,3 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nullness.Bang.Tests.utility;
@@ -89,6 +87,69 @@ namespace Nullness.Bang.Tests
             testhost.ExpectedDiagnostics.Add(
                 DiagnosticResult.CompilerWarning("CS8602").WithSpan(14, 9, 14, 45)
             );
+
+            await testhost.RunAsync();
+        }
+
+        [TestMethod]
+        public async Task CS8602CodeFixTests_Multi_Null_Main()
+        {
+            var testhost = new CS8602CodeFixTestHost()
+            {
+                TestCode = """ 
+                #nullable enable
+                public class MyClass
+                {
+
+                    public string? MyProperty { get; set; }
+
+                    public MyClass MyClassProp => this;
+
+                    public MyClass? MyClassNullableProp => this;
+
+                }
+
+                public class X
+                {
+                    public void run()
+                    {
+                        new MyClass().MyClassProp.MyClassNullableProp.MyProperty.ToLower();
+                    } 
+                }
+
+                """,
+                FixedCode = """ 
+                #nullable enable
+                public class MyClass
+                {
+                
+                    public string? MyProperty { get; set; }
+                
+                    public MyClass MyClassProp => this;
+                
+                    public MyClass? MyClassNullableProp => this;
+                
+                }
+                
+                public class X
+                {
+                    public void run()
+                    {
+                        new MyClass().MyClassProp.MyClassNullableProp!.MyProperty!.ToLower();
+                    } 
+                }
+                
+                """,
+            };
+
+            testhost.ExpectedDiagnostics.Add(
+                DiagnosticResult.CompilerWarning("CS8602").WithSpan(17, 9, 17, 65)
+            );
+            testhost.ExpectedDiagnostics.Add(
+                DiagnosticResult.CompilerWarning("CS8602").WithSpan(17, 9, 17, 54)
+            );
+
+            testhost.NumberOfIncrementalIterations = 2;      
 
             await testhost.RunAsync();
         }
