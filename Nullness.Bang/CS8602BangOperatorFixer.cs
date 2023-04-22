@@ -52,11 +52,10 @@ namespace Nullness.Bang
                 .OfType<MemberAccessExpressionSyntax>()
                 .LastOrDefault();
 
-            var vreemd = token.Parent
-                .AncestorsAndSelf()
-                .OfType<PostfixUnaryExpressionSyntax>()
-                .Select(p => p.IsKind(SyntaxKind.SuppressNullableWarningExpression))
-                .ToList();
+            if(memberAccess == null)
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 CodeAction.Create(
