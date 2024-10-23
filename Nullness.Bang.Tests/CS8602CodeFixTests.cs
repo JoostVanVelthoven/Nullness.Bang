@@ -153,5 +153,37 @@ namespace Nullness.Bang.Tests
 
             await testhost.RunAsync();
         }
+
+        [TestMethod]
+        public async Task CS8603CodeFixTests_UpdateReturnTypeToNullable()
+        {
+            var testhost = new CS8602CodeFixTestHost()
+            {
+                TestCode = """ 
+                #nullable enable
+                public class X {
+                    public string demo()
+                    {
+                        return null;
+                    } 
+                }
+                """,
+                FixedCode = """ 
+                #nullable enable
+                public class X {
+                    public string? demo()
+                    {
+                        return null;
+                    } 
+                }
+                """,
+            };
+
+            testhost.ExpectedDiagnostics.Add(
+                DiagnosticResult.CompilerWarning("CS8603").WithSpan(4, 24, 4, 28)
+            );
+
+            await testhost.RunAsync();
+        }
     }
 }
