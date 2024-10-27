@@ -180,7 +180,7 @@ namespace Nullness.Bang.Tests
             };
 
             testhost.ExpectedDiagnostics.Add(
-                DiagnosticResult.CompilerWarning("CS8603").WithSpan(4, 24, 4, 28)
+                DiagnosticResult.CompilerWarning("CS8603").WithSpan(5, 16, 5, 20)
             );
 
             await testhost.RunAsync();
