@@ -10,7 +10,7 @@ namespace Nullness.Bang.Tests
         [TestMethod]
         public async Task CS8602CodeFixTests_Main()
         {
-            var testhost = new CS8602CodeFixTestHost()
+            var testhost = new BangCodeFixTestHost()
             {
                 TestCode = """ 
                 #nullable enable
@@ -42,7 +42,7 @@ namespace Nullness.Bang.Tests
         [TestMethod]
         public async Task CS8602CodeFixTests_Multi_props()
         {
-            var testhost = new CS8602CodeFixTestHost()
+            var testhost = new BangCodeFixTestHost()
             {
                 TestCode = """ 
                 #nullable enable
@@ -94,7 +94,7 @@ namespace Nullness.Bang.Tests
         [TestMethod]
         public async Task CS8602CodeFixTests_Multi_Null_Main()
         {
-            var testhost = new CS8602CodeFixTestHost()
+            var testhost = new BangCodeFixTestHost()
             {
                 TestCode = """ 
                 #nullable enable
@@ -157,7 +157,7 @@ namespace Nullness.Bang.Tests
         [TestMethod]
         public async Task CS8603CodeFixTests_UpdateReturnTypeToNullable()
         {
-            var testhost = new CS8602CodeFixTestHost()
+            var testhost = new BangCodeFixTestHost()
             {
                 TestCode = """ 
                 #nullable enable

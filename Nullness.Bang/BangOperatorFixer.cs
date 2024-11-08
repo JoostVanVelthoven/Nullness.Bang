@@ -8,12 +8,11 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 
 namespace Nullness.Bang
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CS8602CodeFixProvider)), Shared]
-    public class CS8602CodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(BangOperatorFixer)), Shared]
+    public class BangOperatorFixer : Microsoft.CodeAnalysis.CodeFixes.CodeFixProvider
     {
         private const string Title = "Add null-forgiving operator";
 
