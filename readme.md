@@ -8,6 +8,9 @@ Nulless.bang is an amazing CS8602 compiler analyzer for .NET C# projects. It's d
 - 🧹 Maintain compatibility with existing code while writing safer new code
 - 🤗 Enjoy a smoother migration experience to strict nullable reference types mode
 
+### bonus
+- Automatically update return types to nullable (string? instead of string) when the method can return null. ( CS8608 )
+
 ## How to Get Started 🚀
 
 1. **Migrate** to strict mode
