@@ -84,7 +84,11 @@ namespace Nullness.Bang
                     CodeAction.Create(
                         title: "Update return type to nullable",
                         createChangedDocument: cancellationToken =>
-                            UpdateReturnTypeToNullableAsync(context.Document, methodDeclaration, cancellationToken),
+                            UpdateReturnTypeToNullableAsync(
+                                context.Document,
+                                methodDeclaration,
+                                cancellationToken
+                            ),
                         equivalenceKey: "UpdateReturnTypeToNullable"
                     ),
                     diagnostic
@@ -121,9 +125,30 @@ namespace Nullness.Bang
         )
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            TypeSyntax newReturnType;
 
-            var newReturnType = SyntaxFactory.NullableType(methodDeclaration.ReturnType);
+            if (
+                methodDeclaration.ReturnType is GenericNameSyntax genericName
+                && genericName.Identifier.Text == "Task"
+                && genericName.TypeArgumentList.Arguments.Count == 1
+            )
+            {
+                // Modify only the inner type to be nullable (e.g., string -> string?)
+                var innerType = genericName.TypeArgumentList.Arguments.First();
+                var nullableInnerType = SyntaxFactory.NullableType(innerType);
 
+                // Create a new TypeArgumentList with the nullable inner type
+                var newTypeArgumentList = genericName.TypeArgumentList.WithArguments(
+                    SyntaxFactory.SingletonSeparatedList<TypeSyntax>(nullableInnerType));
+
+                // Replace the generic name with the updated type argument list
+                newReturnType = genericName.WithTypeArgumentList(newTypeArgumentList);
+
+            }
+            else
+            {
+                newReturnType = SyntaxFactory.NullableType(methodDeclaration.ReturnType);
+            }
             var newMethodDeclaration = methodDeclaration.WithReturnType(newReturnType);
 
             var newRoot = root.ReplaceNode(methodDeclaration, newMethodDeclaration);
